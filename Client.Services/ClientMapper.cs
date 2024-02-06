@@ -27,6 +27,7 @@ internal class ClientMapper : IClientMapper
     /// <returns>Клиент.</returns>
     public ClientDto Create(ClientEntity clientEntity)
     {
+        ArgumentNullException.ThrowIfNull(clientEntity);
         return new ClientDto()
         {
             Id = clientEntity.id,
