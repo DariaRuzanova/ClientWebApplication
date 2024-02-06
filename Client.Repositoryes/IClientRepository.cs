@@ -28,19 +28,19 @@ public interface IClientRepository
     /// <param name="clientEntity">Клиент БД.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Клиент.</returns>
-    Task<ClientDto> Create(ClientEntity clientEntity, CancellationToken cancellationToken);
-    
-    /// <summary>
-    /// Возвращает обновленного клиента.
-    /// </summary>
-    /// <param name="id">Идентификатор.</param>
-    /// <param name="client">Данные о клиенте.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Клиент.</returns>
-    Task<ClientDto> Update(int id, ClientDto client, CancellationToken cancellationToken);
+    Task<ClientEntity> Create(ClientEntity clientEntity, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Возвращает флаг успешного удаления клиента.
+    /// Возвращает обновленного клиента из репозитория.
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="clientEntity">Данные о клиенте из репозитория.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Клиент.</returns>
+    Task<ClientEntity> Update(int id, ClientEntity clientEntity, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Возвращает флаг успешного удаления клиента из репозитория.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>

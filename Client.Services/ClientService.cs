@@ -44,12 +44,14 @@ internal class ClientService : IClientService
     /// <returns>Клиент.</returns>
     public async Task<ClientDto> Create(ClientDto client, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(client); //проверяет на null и может выбросить исключение
         ClientEntity clientEntity = _clientMapper.Create(client);
-        return await _clientRepository.Create(clientEntity, cancellationToken);
+        ClientEntity entity = await _clientRepository.Create(clientEntity, cancellationToken);
+        return _clientMapper.Create(entity);
     }
 
     /// <summary>
-    /// Возвращает обновленного клиента.
+    /// Возвращает обновленного клиента в БД.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
     /// <param name="client">Данные о клиенте.</param>
@@ -57,7 +59,10 @@ internal class ClientService : IClientService
     /// <returns>Клиент.</returns>
     public async Task<ClientDto> Update(int id, ClientDto client, CancellationToken cancellationToken)
     {
-        return await _clientRepository.Update(id, client, cancellationToken);
+        ArgumentNullException.ThrowIfNull(client);
+        ClientEntity clientEntity = _clientMapper.Create(client);
+        ClientEntity entity = await _clientRepository.Update(id, clientEntity, cancellationToken);
+        return _clientMapper.Create(entity);
     }
 
     /// <summary>
@@ -66,8 +71,8 @@ internal class ClientService : IClientService
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Флаг успешного удаления.</returns>
-    public async Task<bool> Delete(int id, CancellationToken cancellationToken)
+    public Task<bool> Delete(int id, CancellationToken cancellationToken)
     {
-        return await _clientRepository.Delete(id, cancellationToken);
+        return _clientRepository.Delete(id, cancellationToken);
     }
 }
