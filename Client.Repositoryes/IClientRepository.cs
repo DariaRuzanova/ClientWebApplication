@@ -20,7 +20,7 @@ public interface IClientRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Клиент.</returns>
-    Task<ClientEntity> Get(int id, CancellationToken cancellationToken);
+    Task<ClientEntity?> Get(int id, CancellationToken cancellationToken);
     
     /// <summary>
     /// Возвращает созданного клиента в репозитория.
