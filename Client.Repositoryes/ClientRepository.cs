@@ -42,12 +42,10 @@ internal class ClientRepository : IClientRepository
     /// <returns>Клиент.</returns>
     public Task<ClientEntity> Create(ClientEntity clientEntity, CancellationToken cancellationToken)
     {
-        if (clientEntity != null)
-        {
-            int id = Interlocked.Increment(ref IdMax);
-            clientEntity.id = id;
-            Context.TryAdd(id, clientEntity);
-        }
+        ArgumentNullException.ThrowIfNull(clientEntity);
+        int id = Interlocked.Increment(ref IdMax);
+        clientEntity.id = id;
+        Context.TryAdd(id, clientEntity);
         return Task.FromResult(clientEntity);
     }
 
@@ -60,12 +58,9 @@ internal class ClientRepository : IClientRepository
     /// <returns></returns>
     public Task<ClientEntity> Update(int id, ClientEntity clientEntity, CancellationToken cancellationToken)
     {
-        if (clientEntity != null)
-        {
-            clientEntity = Context.AddOrUpdate(id, keyId => clientEntity,
-                (keyId, exist) => clientEntity);
-        }
-
+        ArgumentNullException.ThrowIfNull(clientEntity);
+        clientEntity = Context.AddOrUpdate(id, keyId => clientEntity,
+            (keyId, exist) => clientEntity);
         return Task.FromResult(clientEntity);
     }
 
