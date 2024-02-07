@@ -14,13 +14,8 @@ internal class ClientRepository : IClientRepository
     /// <returns>Массив клиентов.</returns>
     public Task<ClientEntity[]> Get(CancellationToken cancellationToken)
     {
-        List<ClientEntity> clientEntities = new List<ClientEntity>();
-        foreach (var clientEntity in Context)
-        {
-            clientEntities.Add(clientEntity.Value);
-        }
-
-        return Task.FromResult(clientEntities.ToArray());
+        ClientEntity[] clientEntities = Context.Values.ToArray();
+        return Task.FromResult(clientEntities);
     }
 
     /// <summary>
@@ -29,7 +24,7 @@ internal class ClientRepository : IClientRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Клиент.</returns>
-    public Task<ClientEntity?> Get(int id, CancellationToken cancellationToken)
+    public Task<ClientEntity> Get(int id, CancellationToken cancellationToken)
     {
         if (!Context.TryGetValue(id, out var clientEntity))
         {
@@ -47,9 +42,12 @@ internal class ClientRepository : IClientRepository
     /// <returns>Клиент.</returns>
     public Task<ClientEntity> Create(ClientEntity clientEntity, CancellationToken cancellationToken)
     {
-        int id = Interlocked.Increment(ref IdMax);
-        clientEntity.id = id;
-        Context.TryAdd(id, clientEntity);
+        if (clientEntity != null)
+        {
+            int id = Interlocked.Increment(ref IdMax);
+            clientEntity.id = id;
+            Context.TryAdd(id, clientEntity);
+        }
         return Task.FromResult(clientEntity);
     }
 
@@ -62,9 +60,10 @@ internal class ClientRepository : IClientRepository
     /// <returns></returns>
     public Task<ClientEntity> Update(int id, ClientEntity clientEntity, CancellationToken cancellationToken)
     {
-        if (Context.TryGetValue(id, out var clientEntityExisting))
+        if (clientEntity != null)
         {
-            if (Context.TryUpdate(id, clientEntity, clientEntityExisting)) ;
+            clientEntity = Context.AddOrUpdate(id, keyId => clientEntity,
+                (keyId, exist) => clientEntity);
         }
 
         return Task.FromResult(clientEntity);
@@ -78,7 +77,7 @@ internal class ClientRepository : IClientRepository
     /// <returns>Флаг успешного удаления.</returns>
     public Task<bool> Delete(int id, CancellationToken cancellationToken)
     {
-        Context.TryRemove(id, out _);
-        return Task.FromResult(true);
+        bool flag = Context.TryRemove(id, out _);
+        return Task.FromResult(flag);
     }
 }
