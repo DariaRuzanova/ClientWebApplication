@@ -15,6 +15,3 @@ public interface IFilterClientService
     /// <returns>Массив клиентов.</returns>
     public Task<FilterClientDto[]> GetFilterClient(string str, CancellationToken cancellationToken);
 }
-
-
-

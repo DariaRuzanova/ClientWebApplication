@@ -28,18 +28,10 @@ internal interface IClientMapper
     ClientEntity Create(ClientDto client);
 
     /// <summary>
-    /// Возвращает массив отсортированных клиентов из БД.
+    /// Возвращает массив отфильтрованных клиентов.
     /// </summary>
-    /// <param name="filterClientEntities">Массив клиентов из БД.</param>
-    /// <returns>Массив клиентов.</returns>
-    FilterClientDto[] Create(FilterClientEntity[] filterClientEntities);
-
-    /// <summary>
-    /// Возвращает клиента, полученного из БД.
-    /// </summary>
-    /// <param name="filterClientEntity">Клиент БД.</param>
-    /// <returns>Клиент.</returns>
-    FilterClientDto CreateFilter(FilterClientEntity filterClientEntity);
-
+    /// <param name="clientDtos">Массив клиентов веб-сервиса.</param>
+    /// <returns>Массив отфильтрованных клиентов.</returns>
     FilterClientDto[] Create(ClientDto[] clientDtos);
+
 }

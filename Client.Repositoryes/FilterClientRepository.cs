@@ -18,12 +18,24 @@ internal class FilterClientRepository : IFilterClientRepository
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
     }
 
+    /// <summary>
+    /// Возвращаем массив отфильтрованных клиентов.
+    /// </summary>
+    /// <param name="str">Строка, ко которой будет произведена фильтрация.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Массив клиентов.</returns>
     public async Task<ClientDto[]> GetFilterClient(string str, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(str);
-        HttpClient httpClient = _httpClientFactory.CreateClient(nameof(FilterClientRepository));
-        ClientDto[] result = await httpClient.GetFromJsonAsync<ClientDto[]>("api/Client", cancellationToken);
-        result = result.Where(x => x.Name.Contains(str, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        HttpClient
+            httpClient =
+                _httpClientFactory.CreateClient(
+                    nameof(FilterClientRepository)); //Создает и настраивает экземпляр HttpClient с использованием конфигурации, которая соответствует логическому имени, указанному в параметре name.
+        ClientDto[]
+            result = await httpClient.GetFromJsonAsync<ClientDto[]>("api/Client",
+                cancellationToken); //Отправляем Get запрос и возвращаем десерилизованные объекты из JSON
+        result = result.Where(x => x.Name.Contains(str, StringComparison.InvariantCultureIgnoreCase))
+            .ToArray(); //Фильтрация
         return result;
     }
 }

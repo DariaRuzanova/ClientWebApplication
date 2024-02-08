@@ -53,37 +53,19 @@ internal class ClientMapper : IClientMapper
     /// <summary>
     /// Возвращает массив отфильтрованных клиентов веб-сервиса.
     /// </summary>
-    /// <param name="filterClientEntities">Массив клиентов репозитория.</param>
-    /// <returns>Массив клиентов.</returns>
-    public FilterClientDto[] Create(FilterClientEntity[] filterClientEntities)
+    /// <param name="clientDtos">Массив клиентов веб-сервиса.</param>
+    /// <returns>Массив отфильтрованных клиентов.</returns>
+    public FilterClientDto[] Create(ClientDto[] clientDtos)
     {
-        ArgumentNullException.ThrowIfNull(filterClientEntities);
-        int n = filterClientEntities.Length;
-        FilterClientDto[] filterClientDtos = new FilterClientDto[n];
-        return (from elem in filterClientEntities select CreateFilter(elem)).ToArray();
+        ArgumentNullException.ThrowIfNull(clientDtos);
+        return clientDtos.Select(x => CreateFilterDto(x)).ToArray();
     }
 
     /// <summary>
-    /// Возвращает клиента веб-сервиса.
+    /// Возвращает клиента веб-сервиса после фильтрации.
     /// </summary>
-    /// <param name="filterClientEntity">Данные клиента репозитория.</param>
+    /// <param name="clientDto">Клиент веб-сервиса.</param>
     /// <returns>Клиент.</returns>
-    public FilterClientDto CreateFilter(FilterClientEntity filterClientEntity)
-    {
-        ArgumentNullException.ThrowIfNull(filterClientEntity);
-        return new FilterClientDto()
-        {
-            ClientId = filterClientEntity.ClientId,
-            FullName = filterClientEntity.FullName
-        };
-    }
-
-    public FilterClientDto[] Create(ClientDto[] filterClientEntities)
-    {
-        ArgumentNullException.ThrowIfNull(filterClientEntities);
-        return filterClientEntities.Select(x => CreateFilterDto(x)).ToArray();
-    }
-
     public FilterClientDto CreateFilterDto(ClientDto clientDto)
     {
         ArgumentNullException.ThrowIfNull(clientDto);
