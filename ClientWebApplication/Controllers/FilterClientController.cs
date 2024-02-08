@@ -12,7 +12,7 @@ public class FilterClientController : ControllerBase
 
     public FilterClientController(IFilterClientService filterClientService)
     {
-        _filterClientService = filterClientService;
+        _filterClientService = filterClientService ?? throw new ArgumentNullException(nameof(filterClientService));
     }
 
     /// <summary>

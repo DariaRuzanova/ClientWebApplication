@@ -1,4 +1,4 @@
-using Client.Services;
+using Client.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;//Для работы с IOC.
 

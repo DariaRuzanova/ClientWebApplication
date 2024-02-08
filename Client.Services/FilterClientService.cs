@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Client.Contracts;
@@ -12,8 +13,8 @@ internal class FilterClientService :IFilterClientService
 
     public FilterClientService(IFilterClientRepository filterClientRepository, IClientMapper clientMapper)
     {
-        _filterClientRepository = filterClientRepository;
-        _clientMapper = clientMapper;
+        _filterClientRepository = filterClientRepository ?? throw new ArgumentNullException(nameof(filterClientRepository));
+        _clientMapper = clientMapper ?? throw new ArgumentNullException(nameof(clientMapper));
     }
 
     /// <summary>
