@@ -1,10 +1,9 @@
 using Client.Contracts;
-using Client.Repositories;
 using WebApplication4.Controllers;
 
 namespace Client.Services;
 
-internal class FilterClientService: IFilterClientService
+internal class FilterClientService :IFilterClientService
 {
     private readonly IFilterClientRepository _filterClientRepository;
     private readonly IClientMapper _clientMapper;
@@ -23,8 +22,8 @@ internal class FilterClientService: IFilterClientService
     /// <returns>Возвращает массив отфильтрованных клиентов из БД.</returns>
     public async Task<FilterClientDto[]> GetFilterClient(string str, CancellationToken cancellationToken)
     {
-        FilterClientEntity[] filterClientEntities =
+        ClientDto[] clientDtos =
             await _filterClientRepository.GetFilterClient(str, cancellationToken);
-        return _clientMapper.Create(filterClientEntities);
+        return _clientMapper.Create(clientDtos);
     }
 }

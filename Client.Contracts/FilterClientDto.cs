@@ -1,7 +1,7 @@
 namespace WebApplication4.Controllers;
 
 /// <summary>
-/// Информация о клиентах.
+/// Информация о клиенте.
 /// </summary>
 public class FilterClientDto
 {

@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client.Repositories;
 
 internal class ClientRepository : IClientRepository
 {
     private static readonly ConcurrentDictionary<int, ClientEntity> Context = new();
-    private static int IdMax = 1;
+    private static int IdMax = 0;
 
     /// <summary>
     /// Возвращает массив клиентов из репозитория.

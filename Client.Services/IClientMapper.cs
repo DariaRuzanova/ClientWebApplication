@@ -40,4 +40,6 @@ internal interface IClientMapper
     /// <param name="filterClientEntity">Клиент БД.</param>
     /// <returns>Клиент.</returns>
     FilterClientDto CreateFilter(FilterClientEntity filterClientEntity);
+
+    FilterClientDto[] Create(ClientDto[] clientDtos);
 }

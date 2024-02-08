@@ -18,7 +18,6 @@ internal class ClientMapper : IClientMapper
         ClientDto[] clientDtos = new ClientDto[n];
         //clientDtos = (from elem in clientEntities select new ClientDto()).ToArray();
         return (from elem in clientEntities select Create(elem)).ToArray();
-       
     }
 
     /// <summary>
@@ -76,6 +75,22 @@ internal class ClientMapper : IClientMapper
         {
             ClientId = filterClientEntity.ClientId,
             FullName = filterClientEntity.FullName
+        };
+    }
+
+    public FilterClientDto[] Create(ClientDto[] filterClientEntities)
+    {
+        ArgumentNullException.ThrowIfNull(filterClientEntities);
+        return filterClientEntities.Select(x => CreateFilterDto(x)).ToArray();
+    }
+
+    public FilterClientDto CreateFilterDto(ClientDto clientDto)
+    {
+        ArgumentNullException.ThrowIfNull(clientDto);
+        return new FilterClientDto
+        {
+            ClientId = clientDto.Id,
+            FullName = clientDto.Name
         };
     }
 }
