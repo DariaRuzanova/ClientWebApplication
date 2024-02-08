@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IClientService, ClientService>();
         services.AddSingleton<IClientMapper, ClientMapper>();
+        services.AddScoped<IFilterClientService, FilterClientService>();
         return services;
     }
     

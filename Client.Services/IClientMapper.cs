@@ -1,12 +1,13 @@
 using Client.Contracts;
 using Client.Repositories;
+using WebApplication4.Controllers;
 
 namespace Client.Services;
 
 internal interface IClientMapper
 {
     /// <summary>
-    /// Возвращает клиента, полученного из БД.
+    /// Возвращает массив клиентов, полученного из БД.
     /// </summary>
     /// <param name="clientEntities">Массив клиентов БД.</param>
     /// <returns>Массив клиентов.</returns>
@@ -25,4 +26,12 @@ internal interface IClientMapper
     /// <param name="client">Клиент веб-сервиса.</param>
     /// <returns>Клиент.</returns>
     ClientEntity Create(ClientDto client);
+
+    /// <summary>
+    /// Возвращает массив отфильтрованных клиентов.
+    /// </summary>
+    /// <param name="clientDtos">Массив клиентов веб-сервиса.</param>
+    /// <returns>Массив отфильтрованных клиентов.</returns>
+    FilterClientDto[] Create(ClientDto[] clientDtos);
+
 }
