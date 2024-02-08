@@ -1,4 +1,7 @@
-﻿namespace Client.Contracts;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace Client.Contracts;
 /// <summary>
 /// Сервис обработки клиентов.
 /// </summary>
