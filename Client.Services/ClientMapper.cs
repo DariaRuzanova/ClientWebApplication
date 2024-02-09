@@ -3,6 +3,7 @@ using System.Linq;
 using Client.Contracts;
 using Client.Repositories;
 using WebApplication4.Controllers;
+using ClientEntity = DataModel.ClientsSchema.Client;
 
 namespace Client.Services;
 
@@ -16,9 +17,6 @@ internal class ClientMapper : IClientMapper
     public ClientDto[] Create(ClientEntity[] clientEntities)
     {
         ArgumentNullException.ThrowIfNull(clientEntities);
-        int n = clientEntities.Length;
-        ClientDto[] clientDtos = new ClientDto[n];
-        //clientDtos = (from elem in clientEntities select new ClientDto()).ToArray();
         return (from elem in clientEntities select Create(elem)).ToArray();
     }
 
@@ -31,10 +29,10 @@ internal class ClientMapper : IClientMapper
     {
         ArgumentNullException.ThrowIfNull(clientEntity);
         return new ClientDto()
-        {
-            Id = clientEntity.id,
-            Name = clientEntity.Name
-        };
+               {
+                   Id = clientEntity.Id,
+                   Name = clientEntity.Name
+               };
     }
 
     /// <summary>
@@ -46,10 +44,10 @@ internal class ClientMapper : IClientMapper
     {
         ArgumentNullException.ThrowIfNull(client);
         return new ClientEntity
-        {
-            id = client.Id,
-            Name = client.Name
-        };
+               {
+                   Id = client.Id,
+                   Name = client.Name
+               };
     }
 
     /// <summary>
@@ -60,7 +58,8 @@ internal class ClientMapper : IClientMapper
     public FilterClientDto[] Create(ClientDto[] clientDtos)
     {
         ArgumentNullException.ThrowIfNull(clientDtos);
-        return clientDtos.Select(x => CreateFilterDto(x)).ToArray();
+        return clientDtos.Select(x => CreateFilterDto(x))
+                         .ToArray();
     }
 
     /// <summary>
@@ -72,9 +71,9 @@ internal class ClientMapper : IClientMapper
     {
         ArgumentNullException.ThrowIfNull(clientDto);
         return new FilterClientDto
-        {
-            ClientId = clientDto.Id,
-            FullName = clientDto.Name
-        };
+               {
+                   ClientId = clientDto.Id,
+                   FullName = clientDto.Name
+               };
     }
 }
