@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Client.Contracts;
 using Client.Repositories;
 
+using ClientEntity = DataModel.ClientsSchema.Client;
+
 namespace Client.Services;
 
 internal class ClientService : IClientService

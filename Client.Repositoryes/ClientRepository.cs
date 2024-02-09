@@ -3,23 +3,28 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DataModel;
+using LinqToDB;
 
 namespace Client.Repositories;
 
 internal class ClientRepository : IClientRepository
 {
-    private static readonly ConcurrentDictionary<int, ClientEntity> Context = new();
-    private static int IdMax = 0;
+    private readonly ClientContextDb _clientContextDb;
+
+    public ClientRepository(ClientContextDb clientContextDb)
+    {
+        _clientContextDb = clientContextDb ?? throw new ArgumentNullException(nameof(clientContextDb));
+    }
 
     /// <summary>
     /// Возвращает массив клиентов из репозитория.
     /// </summary>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Массив клиентов.</returns>
-    public Task<ClientEntity[]> Get(CancellationToken cancellationToken)
+    public  Task<ClientsSchema.Client[]> Get(CancellationToken cancellationToken)
     {
-        ClientEntity[] clientEntities = Context.Values.ToArray();
-        return Task.FromResult(clientEntities);
+        return _clientContextDb.Clients.Clients.ToArrayAsync(token: cancellationToken);
     }
 
     /// <summary>
@@ -28,14 +33,9 @@ internal class ClientRepository : IClientRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Клиент.</returns>
-    public Task<ClientEntity> Get(int id, CancellationToken cancellationToken)
+    public  Task<ClientsSchema.Client> Get(int id, CancellationToken cancellationToken)
     {
-        if (!Context.TryGetValue(id, out var clientEntity))
-        {
-            Task.FromResult(default(ClientEntity));
-        }
-
-        return Task.FromResult(clientEntity);
+        return _clientContextDb.Clients.Clients.SingleOrDefaultAsync(x => x.Id == id, token: cancellationToken);
     }
 
     /// <summary>
@@ -44,13 +44,12 @@ internal class ClientRepository : IClientRepository
     /// <param name="clientEntity">Данные о клиенте.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Клиент.</returns>
-    public Task<ClientEntity> Create(ClientEntity clientEntity, CancellationToken cancellationToken)
+    public async Task<ClientsSchema.Client> Create(ClientsSchema.Client clientEntity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(clientEntity);
-        int id = Interlocked.Increment(ref IdMax);
-        clientEntity.id = id;
-        Context.TryAdd(id, clientEntity);
-        return Task.FromResult(clientEntity);
+        int id = await _clientContextDb.InsertWithInt32IdentityAsync(clientEntity, token: cancellationToken);
+        clientEntity.Id = id;
+        return clientEntity;
     }
 
     /// <summary>
@@ -60,12 +59,20 @@ internal class ClientRepository : IClientRepository
     /// <param name="clientEntity">Данные о клиенте.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns></returns>
-    public Task<ClientEntity> Update(int id, ClientEntity clientEntity, CancellationToken cancellationToken)
+    public async Task<ClientsSchema.Client> Update(int id, ClientsSchema.Client clientEntity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(clientEntity);
-        clientEntity = Context.AddOrUpdate(id, keyId => clientEntity,
-            (keyId, exist) => clientEntity);
-        return Task.FromResult(clientEntity);
+        int x = await _clientContextDb.Clients.Clients.UpdateAsync(t => t.Id == id,
+                                                        c => new ClientsSchema.Client()
+                                                             {
+                                                                 Name = clientEntity.Name
+                                                             },
+                                                        token: cancellationToken);
+        if (x == 0)
+        {
+            throw new InvalidOperationException("По переданному идентификатору id не найдена запись для обновления.");
+        }
+        return await Get(id, cancellationToken);
     }
 
     /// <summary>
@@ -74,9 +81,9 @@ internal class ClientRepository : IClientRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Флаг успешного удаления.</returns>
-    public Task<bool> Delete(int id, CancellationToken cancellationToken)
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken)
     {
-        bool flag = Context.TryRemove(id, out _);
-        return Task.FromResult(flag);
+        int x = await _clientContextDb.Clients.Clients.DeleteAsync(x => x.Id == id, cancellationToken);
+        return x != 0;
     }
 }

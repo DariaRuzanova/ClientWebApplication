@@ -1,6 +1,7 @@
 using Client.Contracts;
-using Client.Repositories;
 using WebApplication4.Controllers;
+
+using ClientEntity = DataModel.ClientsSchema.Client;
 
 namespace Client.Services;
 

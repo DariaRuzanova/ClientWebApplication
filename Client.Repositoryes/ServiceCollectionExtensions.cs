@@ -1,4 +1,7 @@
 using Client.Contracts;
+using DataModel;
+using LinqToDB;
+using LinqToDB.AspNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;//Для работы с IOC.
 
@@ -22,6 +25,9 @@ public static class ServiceCollectionExtensions
             ClientSettings settings = configuration.GetSection(nameof(ClientSettings)).Get<ClientSettings>();//Обращаемся к секции конфигурации clientSettings и десерилизуем в класс ClientSettings
             httpClient.BaseAddress = settings.ServiceAddress; //Для HttpClient указываем адрес машины.
         });
+        services.AddLinqToDBContext<ClientContextDb>((di, options) =>
+                                                         options.UsePostgreSQL(di.GetRequiredService<IConfiguration>()
+                                                                                 .GetConnectionString("Clients")!));
         return services;
     }
 }
